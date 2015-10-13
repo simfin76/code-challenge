@@ -1,42 +1,77 @@
 'use strict';
 
-/* https://github.com/angular/protractor/blob/master/docs/toc.md */
+/* http://docs.angularjs.org/guide/dev_guide.e2e-testing */
 
-describe('my app', function() {
+describe('Code Challenge App', function() {
 
+  describe('Data list view', function() {
 
-  it('should automatically redirect to /view1 when location hash/fragment is empty', function() {
-    browser.get('index.html');
-    expect(browser.getLocationAbsUrl()).toMatch("/view1");
+    beforeEach(function() {
+      browser.get('app/index.html');
+    });
+      
+    it('should have a title', function() {
+    browser.get('http://localhost:8000/app/index.html');
+
+    expect(browser.getTitle()).toEqual('Angular SPA Code Challange CUBEYOU');
   });
 
 
-  describe('view1', function() {
+    it('should filter the data in datalist into the search box', function() {
 
-    beforeEach(function() {
-      browser.get('index.html#/view1');
-    });
+      var dataList = element.all(by.repeater('data in datalist'));
+      var search = element(by.model('search'));
 
+      expect(dataList.count()).toBe(3);
 
-    it('should render view1 when user navigates to /view1', function() {
-      expect(element.all(by.css('[ng-view] p')).first().getText()).
-        toMatch(/partial for view 1/);
-    });
+      var firstdatapag = element(by.repeater('data in datalist').row(0).column('data.name'));
+      expect(firstdatapag.getText()).toEqual('Family Guy');
+      var lastdatapag = element(by.repeater('data in datalist').row(2).column('data.name'));
+      expect(lastdatapag.getText()).toEqual('Family Feud');
+              
+      search.sendKeys('Feud');
+      expect(dataList.count()).toBe(1);
+      var firstdatapag = element(by.repeater('data in datalist').row(0).column('data.name'));
+      expect(firstdatapag.getText()).toEqual('Family Feud');
 
-  });
+      search.clear();
+      search.sendKeys('ABC');
+      expect(dataList.count()).toBe(1);
+            
+      search.clear();
+      search.sendKeys('Family');
+      expect(dataList.count()).toBe(3);
+      var firstdatapag = element(by.repeater('data in datalist').row(0).column('data.name'));
+      expect(firstdatapag.getText()).toEqual('Family Guy');
+   
+    }); 
+      
+  /*   it('should be possible to control phone order via the drop down select box', function() {
 
+      var phoneNameColumn = element.all(by.repeater('phone in phones').column('phone.name'));
+      var query = element(by.model('query'));
 
-  describe('view2', function() {
+      function getNames() {
+        return phoneNameColumn.map(function(elm) {
+          return elm.getText();
+        });
+      }
 
-    beforeEach(function() {
-      browser.get('index.html#/view2');
-    });
+      query.sendKeys('tablet'); //let's narrow the dataset to make the test assertions shorter
 
+      expect(getNames()).toEqual([
+        "Motorola XOOM with Wi-Fi",
+        "MOTOROLA XOOM"
+      ]);
 
-    it('should render view2 when user navigates to /view2', function() {
-      expect(element.all(by.css('[ng-view] p')).first().getText()).
-        toMatch(/partial for view 2/);
-    });
+      element(by.model('orderProp')).element(by.css('option[value="name"]')).click();
 
+      expect(getNames()).toEqual([
+        "MOTOROLA XOOM",
+        "Motorola XOOM with Wi-Fi"
+      ]);
+    }); */
   });
 });
+
+

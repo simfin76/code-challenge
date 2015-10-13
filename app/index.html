@@ -1,43 +1,106 @@
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="en" ng-app="myApp" class="no-js lt-ie9"> <![endif]-->
-<!--[if gt IE 8]><!--> <html lang="en" ng-app="myApp" class="no-js"> <!--<![endif]-->
-<head>
-  <meta charset="utf-8">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>My AngularJS App</title>
-  <meta name="description" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/normalize.css">
-  <link rel="stylesheet" href="bower_components/html5-boilerplate/dist/css/main.css">
-  <link rel="stylesheet" href="app.css">
-  <script src="bower_components/html5-boilerplate/dist/js/vendor/modernizr-2.8.3.min.js"></script>
-</head>
-<body>
-  <ul class="menu">
-    <li><a href="#/view1">view1</a></li>
-    <li><a href="#/view2">view2</a></li>
-  </ul>
+<!doctype html>
+<html lang="en" ng-app="CodeChallenge">
+  <head>
+    <meta charset="utf-8">
+    <title>Angular SPA Code Challange CUBEYOU</title>
+    <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.min.css">
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+    <link rel="stylesheet" type="text/css" href="css/angucomplete.css">
+  </head>
+  <body>
+	<div role="main" class="container theme-showcase">
+      <div class="" style="margin-top:90px;">
+        <div class="col-lg-12">
+			<div class="page-header">
+				<h2 id="tables">Consumer interest data table</h2>
+			</div>
+			<div class="bs-component" ng-controller="listdata">
+				<form class="form-inline has-feedback" >
+                    
+                   <h5>Autocomplete search example</h5>
+                   <div class="padded-row">
+                      <angucomplete id="ex1" placeholder="Search consumer interested in" pause="100" selectedobject="selectedElement" localdata="datalist" searchfields="name" titlefield="name" minlength="1" inputclass="form-control form-control-small" matchclass="highlight" />                    
+                    </div>
+                    <span class="icon_search form-control-feedback"></span>
+                    
+                    <div class="" ng-show="selectedElement">
+                       <table class="table table-bordered table-hover">
+                                <thead>
+                                    <tr class="info">
+                                        <th>ID</th>
+                                        <th>NAME</th>
+                                        <th style="text-align: center" >REACH</th>
+                                        <th style="text-align: center" >TRENDS</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                              <tbody>
+                                    <tr>
+                                        <td>{{selectedElement.originalObject.id}}</td>
+                                        <td>{{selectedElement.originalObject.name}}</td>
+                                        <td style="text-align: center">{{selectedElement.originalObject.reach*100 | number:0}}%</td>
+                                        <td ng-class="{red: selectedElement.originalObject.trends*100 < 0, green:selectedElement.originalObject.trends*100 > 0}" style="text-align: center">{{selectedElement.originalObject.trends*100 | number:0}}%</td>
+                                         <td style="text-align: center"><span class="glyphicon glyphicon-remove-circle" style="color:red" ng-click="remove(selectedElement)"></span></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </div>
+                    
+                    <h5>Sample search with pagination example</h5>
+					<div class="form-group" >
 
-  <!--[if lt IE 7]>
-      <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
-  <![endif]-->
+						<input type="text" ng-model="search" class="form-control" placeholder="Search">
 
-  <div ng-view></div>
-
-  <div>Angular seed app: v<span app-version></span></div>
-
-  <!-- In production use:
-  <script src="//ajax.googleapis.com/ajax/libs/angularjs/x.x.x/angular.min.js"></script>
-  -->
-  <script src="bower_components/angular/angular.js"></script>
-  <script src="bower_components/angular-route/angular-route.js"></script>
-  <script src="app.js"></script>
-  <script src="view1/view1.js"></script>
-  <script src="view2/view2.js"></script>
-  <script src="components/version/version.js"></script>
-  <script src="components/version/version-directive.js"></script>
-  <script src="components/version/interpolate-filter.js"></script>
-</body>
+					</div>
+                    
+				</form>
+				<table class="table table-bordered table-hover">
+					<thead>
+						<tr class="info">
+							<th ng-click="sort('id')">ID
+								<span class="glyphicon sort-icon" ng-show="sortKey=='id'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+							</th>
+							<th ng-click="sort('name')">NAME
+								<span class="glyphicon sort-icon" ng-show="sortKey=='name'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+							</th>
+							<th style="text-align: center" ng-click="sort('reach')">REACH
+								<span class="glyphicon sort-icon" ng-show="sortKey=='reach'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+							</th>
+							<th style="text-align: center" ng-click="sort('trends')">TRENDS
+								<span class="glyphicon sort-icon" ng-show="sortKey=='trends'" ng-class="{'glyphicon-chevron-up':reverse,'glyphicon-chevron-down':!reverse}"></span>
+							</th>
+                            <th></th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr dir-paginate="data in datalist|orderBy:sortKey:reverse|filter:search|itemsPerPage:3">
+							<td>{{data.id}}</td>
+							<td>{{data.name}}</td>
+							<td style="text-align: center">{{data.reach*100 | number:0}}%</td>
+							<td ng-class="{red: data.trends*100 < 0, green:data.trends*100 > 0}" style="text-align: center">{{data.trends*100 | number:0}}%</td>
+                            <td style="text-align: center"><span class="glyphicon glyphicon-remove-circle" style="color:red" ng-click="remove(data)"></span></td>
+						</tr>
+					</tbody>
+				</table>
+                <div style="text-align: center">
+                    <dir-pagination-controls
+                        max-size="5"
+                        direction-links="true"
+                        boundary-links="true" >
+                    </dir-pagination-controls>
+                </div>  
+			</div>
+		</div>
+      </div>
+    </div>
+        <script src="bower_components/jquery/dist/jquery.js"></script>
+        <script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/bootstrap/dist/js/bootstrap.js"></script>
+		<script src="bower_components/angular/angular.js"></script>
+        <script src="bower_components/angular-route/angular-route.js"></script>
+		<script src="components/dirPagination/dirPagination.js"></script>
+		<script src="app.js"></script>
+        <script src="components/angucomplete/angucomplete.js"></script>
+  </body>
 </html>
