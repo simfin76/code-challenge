@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "description": "Angular SPA Code Challange CUBEYOU",
-  "repository": "https://github.com/angular/angular-seed",
+  "repository": "https://github.com/simfin76/code-challenge",
   "license": "MIT",
   "devDependencies": {
     "bower": "^1.3.1",
